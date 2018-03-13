@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Grunt - imagemin图像压缩 | Hdwill | 记忆夹子</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前端构建部分引入了 Grunt，本文介绍其中的常用插件 grunt-contrib-imagemin 。">
+<meta name="keywords" content="Grunt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Grunt - imagemin图像压缩">
+<meta property="og:url" content="http://hdwill.info/2014/gruntjs-imagemin/index.html">
+<meta property="og:site_name" content="Hdwill | 记忆夹子">
+<meta property="og:description" content="前端构建部分引入了 Grunt，本文介绍其中的常用插件 grunt-contrib-imagemin 。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-01-25T10:12:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Grunt - imagemin图像压缩">
+<meta name="twitter:description" content="前端构建部分引入了 Grunt，本文介绍其中的常用插件 grunt-contrib-imagemin 。">
+  
+    <link rel="alternate" href="/atom.xml" title="Hdwill | 记忆夹子" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hdwill | 记忆夹子</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://hdwill.info"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2014/gruntjs-imagemin" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/gruntjs-imagemin/" class="article-date">
+  <time datetime="2014-06-24T13:00:00.000Z" itemprop="datePublished">2014-06-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tech/">Tech</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Grunt - imagemin图像压缩
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>项目前端构建部分引入了 <a href="http://www.gruntjs.com/" target="_blank" rel="noopener">Grunt</a>，便于各项处理任务的自动化管理和运行，重复性的任务都交给工具去完成，代码编译、规范校验、单元测试等，一次配置终生受用！他会按照你预先设定好的顺序自动执行各个任务。</p>
+<p>关于 Grunt 的前世今生我就不做介绍了，这里只做使用介绍，也是项目开发中的部分经验积累和记录。</p>
+<p>项目上线前，都要对网站进行各项测试，前端这部分我们首要考虑的是对图片的压缩，因为我用 PageSpeed 检测的时候，这部分直接飙红了，提示压缩后最大限度降低有效负荷，这都是在开发时，切图没有输出最优图片而导致。以前处理方式，或许会在工具里重新输出图片，还有 <a href="http://www.smushit.com/ysmush.it/" target="_blank" rel="noopener">Yahoo - Smush.it</a> 上传处理等……这些工具在很大程度上也帮我们不少忙，但难免在你开发的时候要多工具的来回切换，输出保存等。今天我们借助 Grunt 就能很轻松的完成这些任务，而且是在你不经意之间就会默默的完成，是不是很人性、很省心！</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 安装插件</span></span><br><span class="line">npm install grunt-contrib-imagemin --save-dev</span><br><span class="line"><span class="comment">// 加载插件(Gruntfile.js)</span></span><br><span class="line">grunt.loadNpmTasks(<span class="string">'grunt-contrib-imagemin'</span>);</span><br><span class="line"><span class="comment">// 配置插件(图片压缩)</span></span><br><span class="line">imagemin: &#123;</span><br><span class="line">    dynamic: &#123;</span><br><span class="line">        options: &#123;</span><br><span class="line">            optimizationLevel: <span class="number">3</span> <span class="comment">// png图片优化水平，3是默认值，取值区间0-7</span></span><br><span class="line">        &#125;,</span><br><span class="line">        files: [</span><br><span class="line">            &#123;</span><br><span class="line">                expand: <span class="literal">true</span>, <span class="comment">// 开启动态扩展</span></span><br><span class="line">                cwd: <span class="string">"images/"</span>, <span class="comment">// 当前工作路径</span></span><br><span class="line">                src: [<span class="string">"**/*.&#123;png,jpg,gif&#125;"</span>], <span class="comment">// 要出处理的文件格式(images下的所有png,jpg,gif)</span></span><br><span class="line">                dest: <span class="string">"images/"</span> <span class="comment">// 输出目录(直接覆盖原图)</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>配置好之后，运行 grunt imagemin<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Running &quot;imagemin:dynamic&quot; (imagemin) task</span><br><span class="line">✔ images/about_1.jpg (already optimized)</span><br><span class="line">...</span><br><span class="line">✔ images/sprites-s4e83c27da3.png (saved 10.92 kB - 8%)</span><br><span class="line">...</span><br><span class="line">Minified 69 images (saved 255.81 kB)</span><br></pre></td></tr></table></figure></p>
+<p>在安装插件的时候，会出现 <code>pre-build...failed</code> 相关字眼的错误，就试试删除后，再重新安装。或者先安装 <code>npm install jpegtran-bin --save-dev</code>，应该是这个和 <code>imagemin</code> 有依赖关系。</p>
+<p>其中 <code>option</code> 里还有一些高级配置，关于 <code>optimizationLevel</code> 也有详细的解释，有兴趣的可以详细阅读。<a href="https://github.com/gruntjs/grunt-contrib-imagemin" target="_blank" rel="noopener">grunt-contrib-imagemin</a>。</p>
+<ol>
+<li>Grunt 中文社区 - <a href="http://gruntjs.org/" target="_blank" rel="noopener">http://gruntjs.org/</a></li>
+<li>Grunt 官网 - <a href="http://gruntjs.com/" target="_blank" rel="noopener">http://gruntjs.com/</a></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://hdwill.info/2014/gruntjs-imagemin/" data-id="cjeptkax0000pr1x8e0vok44m" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Grunt/">Grunt</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/gruntjs-livereload/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Grunt - LiveReload页面自动刷新
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/sass-function-color/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Sass 学习笔记 - 颜色函数</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Kategorien</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Life/">Life</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Share/">Share</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bootstrap/">Bootstrap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Compass/">Compass</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FEE/">FEE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Font-Awesome/">Font Awesome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Grunt/">Grunt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PDF-js/">PDF.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SASS/">SASS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SCSS/">SCSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sass/">Sass</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sprite/">Sprite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UED/">UED</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/google/">google</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greader/">greader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/icomoon/">icomoon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/icon-font/">icon font</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/img/">img</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle/">kindle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/life/">life</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lumia/">lumia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/">markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nokia/">nokia</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/paperwhite/">paperwhite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reader/">reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/responsive/">responsive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spritesmith/">spritesmith</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/twitter-bootstrap/">twitter bootstrap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/viewport/">viewport</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Bootstrap/" style="font-size: 10px;">Bootstrap</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Compass/" style="font-size: 17.5px;">Compass</a> <a href="/tags/FEE/" style="font-size: 10px;">FEE</a> <a href="/tags/Font-Awesome/" style="font-size: 10px;">Font Awesome</a> <a href="/tags/Grunt/" style="font-size: 15px;">Grunt</a> <a href="/tags/PDF-js/" style="font-size: 10px;">PDF.js</a> <a href="/tags/Ruby/" style="font-size: 10px;">Ruby</a> <a href="/tags/SASS/" style="font-size: 10px;">SASS</a> <a href="/tags/SCSS/" style="font-size: 10px;">SCSS</a> <a href="/tags/Sass/" style="font-size: 20px;">Sass</a> <a href="/tags/Sprite/" style="font-size: 12.5px;">Sprite</a> <a href="/tags/UED/" style="font-size: 10px;">UED</a> <a href="/tags/google/" style="font-size: 10px;">google</a> <a href="/tags/greader/" style="font-size: 10px;">greader</a> <a href="/tags/icomoon/" style="font-size: 10px;">icomoon</a> <a href="/tags/icon-font/" style="font-size: 10px;">icon font</a> <a href="/tags/img/" style="font-size: 10px;">img</a> <a href="/tags/kindle/" style="font-size: 10px;">kindle</a> <a href="/tags/life/" style="font-size: 10px;">life</a> <a href="/tags/lumia/" style="font-size: 10px;">lumia</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/nokia/" style="font-size: 10px;">nokia</a> <a href="/tags/paperwhite/" style="font-size: 10px;">paperwhite</a> <a href="/tags/reader/" style="font-size: 10px;">reader</a> <a href="/tags/responsive/" style="font-size: 12.5px;">responsive</a> <a href="/tags/spritesmith/" style="font-size: 10px;">spritesmith</a> <a href="/tags/twitter-bootstrap/" style="font-size: 10px;">twitter bootstrap</a> <a href="/tags/viewport/" style="font-size: 12.5px;">viewport</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">July 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">June 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">May 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/Setup-PDF.js-in-your-website/">PDF.js 本地部署</a>
+          </li>
+        
+          <li>
+            <a href="/2015/grunt-spritesmith-handbook/">grunt-spritesmith 使用笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2015/hard-to-find-fee/">推荐阅读：关于前端开发的行业现状和发展分析</a>
+          </li>
+        
+          <li>
+            <a href="/2014/compass-sprite/">Compass Sprite</a>
+          </li>
+        
+          <li>
+            <a href="/2014/gruntjs-livereload/">Grunt - LiveReload页面自动刷新</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 hdwills<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
